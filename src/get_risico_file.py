@@ -3,9 +3,8 @@ import rasterio as rio
 import numpy as np
 import os
 
-def get_risico_static_file(fuel12cl_path, slope_path, aspect_path, outfile):
+def write_risico_files(fuel12cl_path, slope_path, aspect_path, outfile):
     with rio.open(fuel12cl_path, 'r') as src:
-
         # Get the geographic coordinate transform (affine transform)
         transform = src.transform
         # Generate arrays of row and column indices
@@ -31,15 +30,21 @@ def get_risico_static_file(fuel12cl_path, slope_path, aspect_path, outfile):
                 
         # create before a file without hazard info, then open it and add hazard
         with open(static_file, 'w') as f:
+            f.write('# lon lat slope aspect\n')
             for i in range(len(lat)):
                 f.write(f'{lon[i]} {lat[i]} {slope[i][0]} {aspect[i][0]}\n')
     
     # now open this last file and add the hazard
     with open(static_file, 'r') as f:
-        lines = f.readlines()
-        # now open the file to write
+        lines = f.readlines()[1:] # skip header
         with open(outfile, 'w') as ff:
+            # write header
+            ff.write('# lon lat slope aspect veg_id \n')
             for i, line in enumerate(lines):
-                ff.write(f'{line.strip()} {hazard[i][0]}\n')
+                veg_id = hazard[i][0]
+                if veg_id < 0:
+                    veg_id = 0
+                new_line = f'{line.strip()} {veg_id}'
+                ff.write(f'{new_line}\n')
 
 

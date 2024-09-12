@@ -18,7 +18,7 @@ from settings import (INDICES, OUTPUT_DROUGHT_PATH,
 
 from reproject import reproject_raster_as
 from fuel12cl import save_raster_as, hazard_12cl_assesment
-from get_risico_file import get_risico_static_file
+from get_risico_file import write_risico_files
 from wildfire_susceptibility.susceptibility import Susceptibility
 
 try: 
@@ -67,7 +67,6 @@ def find_latest(path_fn, date):
         rawpath = path_fn(current_date)
         
         if os.path.isfile(rawpath):
-            logging.info(f'found {rawpath}')
             found = True
             break
         
@@ -111,9 +110,11 @@ def run():
         SSMI{ssmi_rawpath}
     ''')
 
+    # keep track if a new file has to be created
+    overwrite = False
+
     # create the name of the final fuel12cl, if already exist dont do anything
     fuel12cl_path = f'{OUTPUT_DIR}/fuel12cl_{year}_{month}_ssmi{ssmi_actualmonth}edi{edi_actuamonth}comb{combined_actualmonth}.tif'
-
     if not os.path.isfile(fuel12cl_path):
         logging.info(f'Creating {os.path.basename(fuel12cl_path)}')
 
@@ -144,11 +145,18 @@ def run():
 
         # create the fuel12cl
         hazard, _, _ = hazard_12cl_assesment(susceptibility_out_path, 
-                                            thresholds = [0.33, 0.66], 
-                                            veg_path = VEG_PATH, 
-                                            mapping_path = VEG_MAPPING_PATH, 
-                                            out_hazard_file = fuel12cl_path)
+                                            thresholds=[0.33, 0.66], 
+                                            veg_path=VEG_PATH, 
+                                            mapping_path=VEG_MAPPING_PATH, 
+                                            out_hazard_file=fuel12cl_path)
 
+
+        overwrite = True
+
+    else:
+        logging.info(f'{os.path.basename(fuel12cl_path)} already exists')
+
+    if not os.path.exists(RISICO_OUTPUT_PATH) or overwrite:
         # convert in risico file
         if not os.path.exists(SLOPE_WGS_PATH): # if slope and aspect already exist dont do it
             # use gdal to create slope and aspect
@@ -163,13 +171,8 @@ def run():
 
         # create a txt file in which each row has x and y coordinates and the value of the hazard
         reproject_raster_as(fuel12cl_path, FUEL12_WGS_PATH, DEM_WGS_PATH)
-        get_risico_static_file(FUEL12_WGS_PATH, SLOPE_WGS_PATH, ASPECT_WGS_PATH, RISICO_OUTPUT_PATH)
-
-
+        write_risico_files(FUEL12_WGS_PATH, SLOPE_WGS_PATH, ASPECT_WGS_PATH, RISICO_OUTPUT_PATH)
         logging.info(f'{RISICO_OUTPUT_PATH} created')
-
-    else:
-        logging.info(f'{os.path.basename(fuel12cl_path)} already exist')
 
 
 if __name__ == '__main__':
