@@ -48,4 +48,4 @@ DEM_WGS_PATH = f"{DATA_PATH}/static_data/DEM_SC_500_4326.tif"
 SLOPE_WGS_PATH = f"{DATA_PATH}/static_data/slope_SC_500_4326.tif"
 ASPECT_WGS_PATH = f"{DATA_PATH}/static_data/aspect_SC_500_4326.tif"
 FUEL12_WGS_PATH = f'{OUTPUT_DIR}/fuel12cl_wgs.tif'
-RISICO_OUTPUT_PATH = f"{BASE_PATH}/bolivia.txt"
+RISICO_OUTPUT_PATH = f"{BASE_PATH}/chiquitania.txt"
