@@ -156,21 +156,28 @@ def run():
     else:
         logging.info(f'{os.path.basename(fuel12cl_path)} already exists')
 
-    if not os.path.exists(RISICO_OUTPUT_PATH) or overwrite:
-        # convert in risico file
+    if not os.path.exists(RISICO_OUTPUT_PATH) or overwrite:        
         if not os.path.exists(SLOPE_WGS_PATH): # if slope and aspect already exist dont do it
             # use gdal to create slope and aspect
             # create file using dem (not wgs)
-            gdal.DEMProcessing(SLOPE_WGS_PATH.replace('.tif', '0.tif'), DEM_PATH, 'slope')
-            gdal.DEMProcessing(ASPECT_WGS_PATH.replace('.tif', '0.tif'), DEM_PATH, 'aspect')
-            # reproject
-            reproject_raster_as(SLOPE_WGS_PATH.replace('.tif', '0.tif'), SLOPE_WGS_PATH, DEM_WGS_PATH)
-            reproject_raster_as(ASPECT_WGS_PATH.replace('.tif', '0.tif'), ASPECT_WGS_PATH, DEM_WGS_PATH)
-            os.remove(SLOPE_WGS_PATH.replace('.tif', '0.tif'))
-            os.remove(ASPECT_WGS_PATH.replace('.tif', '0.tif'))
+
+            logging.info(f'Calcualte slope')
+            temp_slope_path = SLOPE_WGS_PATH.replace('.tif', '0.tif')
+            gdal.DEMProcessing(temp_slope_path, DEM_PATH, 'slope')
+            reproject_raster_as(temp_slope_path, SLOPE_WGS_PATH, DEM_WGS_PATH)
+            os.remove(temp_slope_path)
+
+            temp_aspect_path = ASPECT_WGS_PATH.replace('.tif', '0.tif')
+            logging.info(f'Calcualte aspect')
+            gdal.DEMProcessing(temp_aspect_path, DEM_PATH, 'aspect')
+            reproject_raster_as(temp_aspect_path, ASPECT_WGS_PATH, DEM_WGS_PATH)
+            os.remove(temp_aspect_path)
+
 
         # create a txt file in which each row has x and y coordinates and the value of the hazard
+        logging.info(f'Reproject fuel12cl from {fuel12cl_path}')
         reproject_raster_as(fuel12cl_path, FUEL12_WGS_PATH, DEM_WGS_PATH)
+        logging.info(f'Write risico file to {RISICO_OUTPUT_PATH}')
         write_risico_files(FUEL12_WGS_PATH, SLOPE_WGS_PATH, ASPECT_WGS_PATH, RISICO_OUTPUT_PATH)
         logging.info(f'{RISICO_OUTPUT_PATH} created')
 

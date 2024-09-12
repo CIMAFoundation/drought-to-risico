@@ -1,28 +1,34 @@
 import rasterio as rio
-try:
-    from osgeo import gdal
-except Exception as e:
-    print(e)
-    print('trying importing gdal direclty')
-    import gdal
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+import rasterio.crs
 
-def reproject_raster_as(input_file: str, output_file: str, reference_file: str) -> str:
-    '''
-    reproj and clip raster based on reference file
-    '''
-
-    with rio.open(input_file) as file_i:
-        input_crs = file_i.crs
-        #bounds = haz.bounds
+def reproject_raster_as(input_file, output_file, reference_file):
     with rio.open(reference_file) as ref:
         bounds = ref.bounds
         res = ref.transform[0]
-        output_crs = ref.crs
+        crs = ref.crs
 
-    gdal.Warp(output_file, input_file,
-                    outputBounds = bounds, xRes=res, yRes=res,
-                    srcSRS = input_crs, dstSRS = output_crs, dstNodata = -9999,
-                    creationOptions=["COMPRESS=LZW", "PREDICTOR=2", "ZLEVEL=3", "BLOCKXSIZE=512", "BLOCKYSIZE=512"])    
-    
-    return output_file
-    
+
+    with rio.open(input_file) as src:       
+        src_crs = src.crs
+        transform, width, height = calculate_default_transform(src_crs, crs, src.width, src.height, *src.bounds)
+        kwargs = src.meta.copy()
+       
+        kwargs.update({
+            'crs': crs,
+            'transform': transform,
+            'width': width,
+            'height': height})
+       
+        with rio.open(output_file, 'w', **kwargs) as dst:
+            for ii in range(1, src.count + 1):
+                reproject(
+                    source=rio.band(src, ii),
+                    destination=rio.band(dst, ii),
+                    src_transform=src.transform,
+                    src_crs=src.crs,
+                    dst_transform=transform,
+                    dst_crs=crs,
+                    resampling=Resampling.nearest)
+
+
