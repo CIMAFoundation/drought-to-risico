@@ -14,9 +14,9 @@ import geopandas as gpd
 import os
 import logging
 
-os.chdir('/share/home/gruppo4/Bolivia/DATA/BolMLmonthly/test_model/annual_wildfire_susceptibility/tools')
 
-from utils import df_statistic
+
+from .utils import df_statistic
 
 
 class Plots():

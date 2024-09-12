@@ -16,7 +16,7 @@ import json
 
 # files from the same repository
 # from input_config import InputConfiguration
-os.chdir('/share/home/gruppo4/Bolivia/DATA/BolMLmonthly/test_model/annual_wildfire_susceptibility')
+
 from tools.tools_dataset_creation import DatasetTools
 from tools.tools_random_forest import RFForestAlgorithm
 from tools.plotting_results import Plots

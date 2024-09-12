@@ -19,14 +19,14 @@ import json
 from scipy import signal
 
 # file from this repository
-os.chdir('/share/home/gruppo4/Bolivia/DATA/BolMLmonthly/test_model/annual_wildfire_susceptibility')
-from tools.tools_random_forest import RFForestAlgorithm
-from tools.plotting_results import Plots
-from tools.tools_dataset_creation import DatasetTools
-from tools.useful_decorators import timer, ram_consumption
-from tools.utils import remove_features, batch_by_rows, reproject_layer, save_raster_as, create_folder, set_logging, raster_classes, get_lat_lon_arrays_from_raster
 
-from input_config import DEFAULT
+from .tools.tools_random_forest import RFForestAlgorithm
+from .tools.plotting_results import Plots
+from .tools.tools_dataset_creation import DatasetTools
+from .tools.useful_decorators import timer, ram_consumption
+from .tools.utils import remove_features, batch_by_rows, reproject_layer, save_raster_as, create_folder, set_logging, raster_classes, get_lat_lon_arrays_from_raster
+
+from .input_config import DEFAULT
 
 @dataclass
 class Susceptibility():

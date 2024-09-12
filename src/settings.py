@@ -2,39 +2,23 @@
 from datetime import datetime as dt
 import os
 
-BASEP = './' # server path
-# BASEP = '/share/home/gruppo4/Bolivia/DATA'
-DATAPATH = f'{BASEP}/script_fuel12cl_risico/data'
-MODELPATH = f'{BASEP}/script_fuel12cl_risico/model'
+RAW_DROUGHT_PATH = '/home/sequia/drought/products'
+BASE_PATH = '.' # server path
 
 
-indices = ['SSMI01-HSAF', 'EDI03-PERSIANN', 'Combined-SPEI03-SWDIHSAF02-VHI01-FAPAR01']
+DATA_PATH = f'{BASE_PATH}/data'
+MODEL_PATH = f'{BASE_PATH}/model/RF.sav'
+X_PATH = f'{BASE_PATH}/model/X.csv'
 
-raw_drough_datapath = f'{BASEP}/products'
-operational_drought_datapath = f'{DATAPATH}/drought'
+INDICES = ['SSMI01-HSAF', 'EDI03-PERSIANN', 'Combined-SPEI03-SWDIHSAF02-VHI01-FAPAR01']
 
-year = dt.now().year
-month = dt.now().month
+OUTPUT_DROUGHT_PATH = f'{DATA_PATH}/drought'
+DEM_PATH = f"{DATA_PATH}/static_data/DEM_SC_100_32721.tif"
+VEG_PATH = f"{DATA_PATH}/static_data/veg_SantaCruz_ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif" 
+OUTPUT_DIR = f'{BASE_PATH}/fuel12_risico'
+VEG_MAPPING_PATH = f'{BASE_PATH}/src/veg_mapping.json'
 
-montlhy_folder_name = f'{year}_{month}'
-
-monthname = f'0{month}' if month < 10 else month
-
-ssmi_rawfile = lambda year, monthname: f'{raw_drough_datapath}/SSMI/{year}/{monthname}/SSMI01-HSAF_{year}{monthname}.tif'
-edi_rawfile = lambda year, monthname: f'{raw_drough_datapath}/EDI/{year}/{monthname}/EDI03-PERSIANN_{year}{monthname}.tif'
-combined_rawfile = lambda year, monthname: f'{raw_drough_datapath}/combined/{year}/{monthname}/Combined-SPEI03-SWDIHSAF02-VHI01-FAPAR01_{year}{monthname}.tif'
-
-
-dem_path = f"{DATAPATH}/static_data/DEM_SC_100_32721.tif"
-veg_path = f"{DATAPATH}/static_data/veg_SantaCruz_ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif" 
-output_dir = f'{BASEP}/script_fuel12cl_risico/fuel12_risico'
-
-model_path = f'{MODELPATH}/RF.sav'
-X_path = f'{MODELPATH}/X.csv'
-
-susceptibility_out_path = f'{output_dir}/susceptibility/annual_maps/Annual_susc_{year}_{month}.tif'
-
-model_config = {    
+MODEL_CONFIG = {    
     "batches" : 5, 
     "nb_codes_list" : [255, 0, 180, 190, 200, 201, 202, 210],
     "list_features_to_remove" : [ "perc_0"],
@@ -60,8 +44,8 @@ model_config = {
 }  
 
 # input for risico file conversion
-dem_wgs_path = f"{DATAPATH}/static_data/DEM_SC_500_4326.tif"
-slope_wgs_path = f"{DATAPATH}/static_data/slope_SC_500_4326.tif"
-aspect_wgs_path = f"{DATAPATH}/static_data/aspect_SC_500_4326.tif"
-fuel12_wgs_path = f'{output_dir}/fuel12cl_wgs.tif'
-risico_output_path = f"{BASEP}/script_fuel12cl_risico/bolivia.txt"
+DEM_WGS_PATH = f"{DATA_PATH}/static_data/DEM_SC_500_4326.tif"
+SLOPE_WGS_PATH = f"{DATA_PATH}/static_data/slope_SC_500_4326.tif"
+ASPECT_WGS_PATH = f"{DATA_PATH}/static_data/aspect_SC_500_4326.tif"
+FUEL12_WGS_PATH = f'{OUTPUT_DIR}/fuel12cl_wgs.tif'
+RISICO_OUTPUT_PATH = f"{BASE_PATH}/bolivia.txt"

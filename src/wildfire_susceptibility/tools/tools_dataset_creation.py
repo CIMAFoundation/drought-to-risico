@@ -16,10 +16,10 @@ from dotmap import DotMap
 from scipy import signal
 
 
-os.chdir('/share/home/gruppo4/Bolivia/DATA/BolMLmonthly/test_model/annual_wildfire_susceptibility/tools')
-from tools_random_forest import RFForestAlgorithm
-from useful_decorators import ram_consumption
-from utils import batch_by_rows, create_topographic_vars, reproject_layer, rasterize_numerical_feature
+
+from .tools_random_forest import RFForestAlgorithm
+from .useful_decorators import ram_consumption
+from .utils import batch_by_rows, create_topographic_vars, reproject_layer, rasterize_numerical_feature
 
 
  

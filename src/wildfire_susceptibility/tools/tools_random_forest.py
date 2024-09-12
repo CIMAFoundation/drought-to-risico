@@ -24,9 +24,9 @@ from dotmap import DotMap
 
 
 # files from the same repository
-os.chdir('/share/home/gruppo4/Bolivia/DATA/BolMLmonthly/test_model/annual_wildfire_susceptibility/tools')
-from plotting_results import Plots
-from utils import rasterize_numerical_feature, aggregate_vars_importances
+
+from .plotting_results import Plots
+from .utils import rasterize_numerical_feature, aggregate_vars_importances
 
 
 
