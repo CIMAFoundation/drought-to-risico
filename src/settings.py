@@ -20,7 +20,7 @@ VEG_MAPPING_PATH = f'{BASE_PATH}/src/veg_mapping.json'
 
 MODEL_CONFIG = {    
     "batches" : 5, 
-    "nb_codes_list" : [255, 0, 180, 190, 200, 201, 202, 210],
+    "nb_codes_list" : [255, 0, 190, 200, 201, 202, 210],
     "list_features_to_remove" : [ "perc_0"],
     "convert_to_month" : 1, 
     "wildfire_years" : [],

@@ -70,7 +70,7 @@ def find_latest(path_fn, date):
             found = True
             break
         
-        current_date = date - timedelta(days=15)
+        current_date = current_date - timedelta(days=15)
     if not found:
         raise ValueError('Could not find data')
 
@@ -80,8 +80,11 @@ def find_latest(path_fn, date):
 
 def run():
     date = dt.now()
-    year = dt.now().year
-    month = dt.now().month
+    year = date.year
+    month = date.month
+
+    logging.info(f'Running for date: {date}')
+
     montlhy_folder_name = f'{year}_{month}'
     susceptibility_out_path = f'{OUTPUT_DIR}/susceptibility/annual_maps/Annual_susc_{montlhy_folder_name}.tif'
 
