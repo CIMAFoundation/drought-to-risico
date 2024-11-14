@@ -1,9 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,macos,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,macos,linux
 
+output
 chiquitania.txt
 data
 fuel12_risico
+fuel12_risico_bckp
 model
 cron.sh
 

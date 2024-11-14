@@ -4,10 +4,13 @@
 
 from datetime import datetime as dt
 from datetime import timedelta
+from shutil import copyfile
+
 import os
 import sys
 import logging
 import numpy as np
+
 
 from settings import (INDICES, OUTPUT_DROUGHT_PATH, 
                       RAW_DROUGHT_PATH,
@@ -78,8 +81,7 @@ def find_latest(path_fn, date):
 
 
 
-def run():
-    date = dt.now()
+def run(date):
     year = date.year
     month = date.month
 
@@ -180,12 +182,26 @@ def run():
         # create a txt file in which each row has x and y coordinates and the value of the hazard
         logging.info(f'Reproject fuel12cl from {fuel12cl_path}')
         reproject_raster_as(fuel12cl_path, FUEL12_WGS_PATH, DEM_WGS_PATH)
+
+        # create the output directory as output/%Y/%m/ and copy FUEL12_WGS_PATH as fuel12cl_%Y%m.tif
+        year_str = date.strftime("%Y")
+        month_str = date.strftime("%m")
+        spool_path = f'output/{year_str}/{month_str}'
+        os.makedirs(spool_path, exist_ok=True)
+        filename = f'{spool_path}/fuel12cl_{year_str}{month_str}.tif'
+        copyfile(FUEL12_WGS_PATH, filename)
+
         logging.info(f'Write risico file to {RISICO_OUTPUT_PATH}')
         write_risico_files(FUEL12_WGS_PATH, SLOPE_WGS_PATH, ASPECT_WGS_PATH, RISICO_OUTPUT_PATH)
         logging.info(f'{RISICO_OUTPUT_PATH} created')
 
 
 if __name__ == '__main__':
-    run()
+    if len(sys.argv) > 1:
+        date_str = sys.argv[1]
+        date = dt.strptime(date_str, '%Y%m%d')
+    else:
+        date = dt.now()
+    run(date)
         
 
